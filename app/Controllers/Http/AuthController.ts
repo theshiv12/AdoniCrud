@@ -1,7 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import User from 'App/Models/user'
-
+import Event from '@ioc:Adonis/Core/Event'
 
 export default class AuthController {
     //registration function
@@ -23,8 +23,13 @@ export default class AuthController {
   }
     
     const data  = await request.validate(validate)
-    const user = await User.create(data)
-    return user
+    const newUser = await User.create(data)
+    Event.emit('new:user', {
+      newUser,
+    })
+
+    Event.emit('new::user', newUser)
+    return newUser
 
     }
 
@@ -41,7 +46,7 @@ export default class AuthController {
     return response.unauthorized('Invalid credentials')
   }
 
-
+     
     }
    //auth logout
     public async logout({ auth, response }: HttpContextContract) {

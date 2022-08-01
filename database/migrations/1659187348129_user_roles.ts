@@ -9,7 +9,7 @@ export default class extends BaseSchema {
 
       table.integer('user_id').unsigned().references('users.id')
       table.integer('role_id').unsigned().references('roles.id')
-      table.unique(['user_id', 'skill_id'])
+      table.unique(['user_id', 'role_id'])
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

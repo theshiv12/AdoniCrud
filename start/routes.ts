@@ -8,6 +8,5 @@ Route.group(() => {
     Route.patch('/updateprofile/:id' , 'ProfilesController.updateProfile')
     Route.delete('/delProfile' , 'ProfilesController.delProfile')
   }).middleware("auth").prefix('/user')
-
 Route.post('/register' ,"AuthController.register")
 Route.post('/login' ,"AuthController.login")
