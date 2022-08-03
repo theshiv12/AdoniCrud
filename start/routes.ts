@@ -1,11 +1,18 @@
-
 import Route from '@ioc:Adonis/Core/Route'
-
+//user route 
 Route.group(() => {
-    Route.get('/viewprofile' , 'ProfilesController.viewProfile')
-    Route.post('/Addprofile' , 'ProfilesController.createProfile')
-    Route.patch('/updateprofile/:id' , 'ProfilesController.updateProfile')
-    Route.delete('/delProfile' , 'ProfilesController.delProfile')
+    Route.get('viewprofile' , 'ProfilesController.viewProfile')
+    Route.post('AddOrUpdateprofile' , 'ProfilesController.createAndUpdateProfile')
+    Route.delete('/deleteProfile' , 'ProfilesController.delProfile')
   }).middleware("auth").prefix('/user')
-Route.post('/register' ,"AuthController.register")
-Route.post('/login' ,"AuthController.login")
+
+Route.post('register' ,"AuthController.register")
+Route.post('login' ,"AuthController.login")
+Route.post('logout' , 'AuthController.logout')
+
+//admin route
+Route.group(() => {
+  Route.get('getProfile/:id' , 'AdminsController.getSingleUserProfile')
+  Route.get('getAllProfile' , 'AdminsController.getAllProfilewithPagination')
+  Route.delete('deleteProfile/:id' , 'AdminsController.deleteSingleUserProfile')
+}).middleware(["auth" , "adminauth"]).prefix('/admin')  

@@ -1,88 +1,77 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Profile from "App/Models/Profile";
-import { schema } from '@ioc:Adonis/Core/Validator'
-
+import CreateProfileValidator from 'App/Validators/CreateProfileValidator';
 
 export default class ProfilesController {
   //view own profile
-    public async viewProfile({auth , response }){
-     try{
-      
-      let profile = await Profile.findBy('id',auth.user.id)
-
-      if(profile){
-      return response.json({
-          success:true,profile
-      })
-    }
-    else{
-         return  response.json({
-          success:false,
-          message:"profile deleted or not created"
-      })
-    }
-    }catch{
-      return response.status(500).json({
-          success:false 
-      })
-    }
-    }
-   
-    //delete own profile
-    public async delProfile({auth , response }){
-      try{
-        let profile = await Profile.findBy('id',auth.user.id)
-         await profile?.delete();
-       return response.status(204).json({
-            message:"deleted"
-          })
-    }catch{
-      return response.status(404).json({
-        message:"profile deleted"
-      })
-    }
-      
-    }
-   
-   
-    //crete an profile
-    public async createProfile({request , response}: HttpContextContract){
-      const validate = 
-      {schema:schema.create({
-          name: schema.string(),
-            gender: schema.string()
-      }),
-      messages: {
-        required: 'The {{ field }} is required to create a new account',
-        'name.unique': 'name not available'
-      }
-    } 
-       const data = await request.validate(validate)
-        await Profile.create(data)
-       response.status(201).send("created")
-    }
-   
-   //update an profile
-  public async updateProfile({request , response , params}: HttpContextContract){
-      try{ 
-        const profile = await Profile.findOrFail(params.id)
-     if(request.input('name'))
-       profile.name=request.input('name')
-     if(request.input('gender') )  
-       profile.gender=request.input('gender') 
-     if(request.input('dob') )
-        profile.dob = request.input('dob') 
-     await profile.save()
-     return  response.status(202).send("updated")
-       
-    }catch(error)
-    {
-        return  response.status(500).json({
-            message:error
+  public async viewProfile({ auth, response }) {
+    try {
+      let profile = await Profile.findBy('user_id', auth.user.id)
+      if (profile) {
+        return response.status(201).json({
+          success: true,
+          data: profile,
+          message: " "
         })
+      }
+      else {
+        return response.status(404).json({
+          success: false,
+          data: {},
+          message: "profile not created"
+        })
+      }
+    } catch {
+      return response.status(500).json({
+        success: false,
+        data: {},
+        message: ""
+      })
     }
-}
+  }
+
+  //delete own profile
+  public async delProfile({ auth, response }) {
+    try {
+      let profile = await Profile.findBy('user_id', auth.user?.id)
+      
+      await profile?.delete();
+      return response.status(200).json({
+        message: "deleted succesfully"
+      })
+    } catch {
+      return response.status(404).json({
+        success: true,
+        data: {},
+        message: "profile not found"
+      })
+    }
+  }
 
 
-    
+  //crete  and update an profile
+  public async createAndUpdateProfile({ request, auth, response }: HttpContextContract) {
+    const data = await request.validate(CreateProfileValidator);
+    console.log(data)
+    let profile = await Profile.findBy("user_id", auth.user?.id)
+    if (profile) {
+      profile.name = request.input('name')
+      profile.gender = request.input('gender')
+      await profile.save()
+      response.status(200).json({
+        success: true,
+        data: profile,
+        message: "updated"
+      })
+    }
+    else {
+      Object.assign(data, { user_id: auth.user?.id });
+      await Profile.create(data)
+      response.status(200).json({
+        success: true,
+        data: data,
+        message: "created"
+      })
+    }
+  }
 }

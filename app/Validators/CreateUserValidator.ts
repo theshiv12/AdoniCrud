@@ -16,6 +16,7 @@ export default class CreateUserValidator {
     ])
   })
 
+  
  
   public messages: CustomMessages = {
   
