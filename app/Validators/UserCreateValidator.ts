@@ -1,10 +1,9 @@
 import { schema, CustomMessages  , rules} from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class CreateUserValidator {
+export default class UserCreateValidator {
   constructor(protected ctx: HttpContextContract) {}
 
- 
   public schema = schema.create({
     email: schema.string([
       rules.email(),
@@ -16,12 +15,8 @@ export default class CreateUserValidator {
     ])
   })
 
-  
- 
   public messages: CustomMessages = {
-  
       required: 'The {{ field }} is required to create a new account',
-      'email.unique': 'email unique voilation failed'
-    
+      'email.unique': 'email unique voilation failed' 
   }
 }

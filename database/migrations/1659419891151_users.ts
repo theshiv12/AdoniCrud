@@ -8,8 +8,6 @@ export default class UsersSchema extends BaseSchema {
       table.increments('id').primary()
       table.string('email', 255).notNullable()
       table.string('password', 180).notNullable()
-
-     
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

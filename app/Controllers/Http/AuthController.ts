@@ -1,76 +1,28 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import User from 'App/Models/user'
 import Event from '@ioc:Adonis/Core/Event'
-import userValid from 'App/Validators/CreateUserValidator'
-import Database from '@ioc:Adonis/Lucid/Database'
-
+import AuthService from 'App/Services/AuthService'
 
 export default class AuthController {
   //registration function
-  public async register({ request, response }: HttpContextContract) {
-    const data = await request.validate(userValid)
-    const newUser = await User.create(data)
+  public async register({ request }: HttpContextContract) {
+    const serviceInstance = new AuthService()
+    const registerUser = await serviceInstance.register(request) 
     Event.emit('new:user', {
-      newUser,
+      registerUser,
     })
-    return response.status(201).json({
-      success: true,
-      data: newUser,
-      message: " "
-    })
+    return registerUser
   }
 
   //login function
-  public async login({ request, auth, response }: HttpContextContract) {
-
-    const email = request.input('email')
-    const password = request.input('password')
-
-    try {
-      const token = await auth.attempt(email, password)
-      return response.status(200).json({
-        success: true,
-        data: token,
-        message: " "
-      })
-    } catch {
-      return response.status(404).json({
-        success: false,
-        data: {},
-        message: "Invalid credentials"
-      })
-    }
+  public async login({ request, auth }: HttpContextContract) {
+    const serviceInstance = new AuthService()
+    const loginUser = await serviceInstance.login(request,auth) 
+    return loginUser
   }
+
   //auth logout
-  public async logout({ auth, response }: HttpContextContract) {
-    await auth.logout()
-    return response.status(200).json({
-      success: true,
-      data: {},
-      message: "logout succesfully"
-    })
+  public async logout({ auth }: HttpContextContract) {
+    return await auth.logout()
+    
   }
-
-  //create manual admin
-  public async admin({ auth, request }: HttpContextContract) {
-    console.log(typeof(auth.user?.id))
-    // return await Database
-    // .table('roles')
-    // .returning('id')
-    // .insert({
-    //   role:"admin",
-    //   user_id:auth.user?.id
-
-    // })
-    return await Database.
-      from("roles")
-      .select('*')
-
-
-  }
-
 }
-
-
-
-

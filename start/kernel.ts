@@ -5,6 +5,6 @@ Server.middleware.register([
 ])
 
 Server.middleware.registerNamed({
-  adminauth:() => import('App/Middleware/Adminrequest') ,
+  adminauth:() => import('App/Middleware/AdminRequest') ,
   auth: () => import('App/Middleware/Auth')
 })
