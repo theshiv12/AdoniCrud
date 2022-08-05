@@ -15,4 +15,8 @@ export default class AdminServices {
       const Admininstance = new AdminRepository()
       return await Admininstance.deleteSingleUserProfile(params);
    }
+   public async assignUserRole(request) {
+      const Admininstance = new AdminRepository()
+      return await Admininstance.assignUserRole(request);
+   }
 }

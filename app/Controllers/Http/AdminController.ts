@@ -19,4 +19,9 @@ export default class AdminController {
         const deletemessage =  await serviceInstance.deleteSingleUserProfile(params)
         return deletemessage
     }
+    public async assignUserRole({ request }: HttpContextContract) {
+        const serviceInstance = new AdminServices()
+        const deletemessage =  await serviceInstance.assignUserRole(request)
+        return deletemessage
+    }
 }
