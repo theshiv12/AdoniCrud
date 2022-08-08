@@ -8,9 +8,9 @@ export default class AdminController {
         return allProfile
     }
 
-    public async getSingleUserProfile({ params}: HttpContextContract) {
+    public async getSingleUserProfile({}: HttpContextContract) {
         const serviceInstance = new AdminServices()
-        const singleProfile = await serviceInstance.getSingleUserProfile(params)
+        const singleProfile = await serviceInstance.getSingleUserProfile()
         return singleProfile
      }
 

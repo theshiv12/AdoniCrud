@@ -3,9 +3,9 @@ import ProfileServices from 'App/Services/ProfileServices';
 
 export default class ProfileController {
   //view own profile
-  public async view({auth}) {
+  public async view() {
     let instanceProfile = new ProfileServices();
-    const profile= await instanceProfile.viewProfile(auth)
+    const profile= await instanceProfile.viewProfile()
     return profile
   }
   //delete own profile

@@ -1,9 +1,9 @@
 import Profilerepos from "App/Repository/ProfileRepository"
 
 export default class ProfileServices {
-  public async viewProfile(auth) {
+  public async viewProfile() {
     const profile = new Profilerepos();
-    return await profile.viewProfile(auth)
+    return await profile.viewProfile()
   }
 
   public async deleteProfile(auth) {

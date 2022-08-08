@@ -1,9 +1,11 @@
+import Database from "@ioc:Adonis/Lucid/Database";
 import Profile from "App/Models/Profile";
 import ProfileCreateValidator from "App/Validators/ProfileCreateValidator";
 
 export default class Profilerepos {
-  public async viewProfile(auth) {
-    return await Profile.findBy('user_id', auth.user.id);
+  public async viewProfile() {
+    return await  await Database.from('users').innerJoin('profiles', 'users.id', 'profiles.user_id')
+    .select("users.email", 'profiles.name', 'profiles.gender', 'profiles.user_id', 'profiles.id')
   }
 
   public async deleteProfile(auth) {

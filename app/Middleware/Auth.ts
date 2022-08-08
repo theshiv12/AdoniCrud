@@ -9,12 +9,9 @@ export default class AuthMiddleware {
   protected async authenticate(auth: HttpContextContract['auth'], guards: (keyof GuardsList)[]) {
 
     let guardLastAttempted: string | undefined
-
     for (let guard of guards) {
       guardLastAttempted = guard
-
       if (await auth.use(guard).check()) {
-      
         auth.defaultGuard = guard
         return true
       }
@@ -26,12 +23,12 @@ export default class AuthMiddleware {
       this.redirectTo,
     )
   }
-  public async handle (
+  public async handle(
     { auth }: HttpContextContract,
     next: () => Promise<void>,
     customGuards: (keyof GuardsList)[]
   ) {
-  
+
     const guards = customGuards.length ? customGuards : [auth.name]
     await this.authenticate(auth, guards)
     await next()

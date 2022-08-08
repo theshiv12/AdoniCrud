@@ -6,9 +6,9 @@ export default class AdminServices {
       return await Admininstance.getAllProfilewithPagination(request)
    }
 
-   public async getSingleUserProfile(params) {
+   public async getSingleUserProfile() {
       const Admininstance = new AdminRepository()
-      return await Admininstance.getSingleUserProfile(params)
+      return await Admininstance.getSingleUserProfile()
    }
    
    public async deleteSingleUserProfile(params) {

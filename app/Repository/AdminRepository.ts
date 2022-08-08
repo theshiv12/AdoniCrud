@@ -1,6 +1,7 @@
 import Profile from "App/Models/Profile"
 import Database from "@ioc:Adonis/Lucid/Database"
 import RoleUser from "App/Models/RoleUser"
+import User from "App/Models/user"
 
 export default class AdminRepository {
     public async getAllProfilewithPagination(request) {
@@ -11,9 +12,9 @@ export default class AdminRepository {
             .paginate(page, limit);
     }
 
-    public async getSingleUserProfile(params) {
-        let profile = await Profile.findBy('id', params.profile_id)
-        return profile;
+    public async getSingleUserProfile() {
+        return await Database.from('users').innerJoin('profiles', 'users.id', 'profiles.user_id')
+            .select("users.email", 'profiles.name', 'profiles.gender', 'profiles.user_id', 'profiles.id');
     }
 
     public async deleteSingleUserProfile(params) {
@@ -21,11 +22,19 @@ export default class AdminRepository {
         return await profile?.delete()
     }
     public async assignUserRole(request) {
-        const role = await Database.from('role_users').where('user_id', request.input('user_id')).select("role_id")
-        if (role.length == 2) {
-            if ((role[0].role_id == 1 || role[1].role_id == 1))
-                return;
+        let user = await User.findBy('id', request.input('user_id'))
+        if (user){
+            const role = await Database.from('role_users').where('user_id', request.input('user_id')).select("role_id")
+            if (role.length == 2) {
+                if (request.input('role_id') == 2)
+                    return await Database.rawQuery(`delete from role_users where user_id=${request.input('user_id')} and role_id=${1}`)
+                else {
+                    return;
+                }
+            }
+            return await RoleUser.create({ role_id: 1, user_id: request.input('user_id') });
         }
-        return await RoleUser.create({ role_id: 1, user_id: request.input('user_id') });
+        else
+             throw new Error("user not exist");    
     }
 }
